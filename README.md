@@ -36,7 +36,7 @@ To revert the changes you can import the generated firewall file using Windows D
 
 In case this does not work, you can try to execute CMD command directly. Open CMD as Administrator and enter:
 ```bash
-netsh advfirewall export "{Path}" 
+netsh advfirewall import "{Path}" 
 ```
 where Path is the full path to the .wfw file. Make sure that the file path is used into ""
 

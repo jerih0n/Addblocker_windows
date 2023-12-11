@@ -84,28 +84,52 @@ def create_firewall_setting_backup() -> True:
         return  False
 
 
+def create_inbound_rule(ip_address):
+    rule_name = f"addblocker-{ip_address}_in"
+    try:
+        if not is_rule_exist(rule_name):
+            command = f'netsh advfirewall firewall add rule name="{rule_name}" dir=in action=block remoteip={ip_address}'
+            subprocess.run(command, check=True, shell=True)
+
+            print(f"firewall rule {rule_name} blocking incoming traffic from {ip_address} created")
+
+    except Exception as e:
+        print(e)
+        print(f"fire wall rule {rule_name} NOT created")
+
+
+def create_outbound_rule(ip_address):
+    rule_name = f"addblocker-{ip_address}_out"
+    try:
+        if not is_rule_exist(rule_name):
+            command = f'netsh advfirewall firewall add rule name="{rule_name}" dir=out action=block remoteip={ip_address}'
+            subprocess.run(command, check=True, shell=True)
+
+            print(f"firewall rule {rule_name} blocking incoming traffic from {ip_address} created")
+
+    except Exception as e:
+        print(e)
+        print(f"fire wall rule {rule_name} NOT created")
+
+
 def add_firewall_restrictions(ip_addresses):
 
     if not create_firewall_setting_backup():
         return
 
-    counter = 0
+    counter_inbound = 0
+    counter_outbound = 0
     for ip in ip_addresses:
-        rule_name = f"addblocker-{ip}"
 
-        try:
-            if not is_rule_exist(rule_name):
-                command = f'netsh advfirewall firewall add rule name="{rule_name}" dir=in action=block remoteip={ip}'
-                subprocess.run(command, check=True, shell=True)
+        create_inbound_rule(ip)
+        counter_inbound += 1
 
-                print(f"firewall rule {rule_name} blocking incoming traffic from {ip} created")
+        create_outbound_rule(ip)
+        counter_outbound += 1
 
-        except Exception as e:
-            print(e)
-            print(f"fire wall rule {rule_name} NOT created")
+        print(f"Total inbound rules created: {counter_inbound}", end='\r\n', flush=True)
+        print(f"Total outbound rules created: {counter_outbound}", end='\r\n', flush=True)
 
-        counter = counter + 1
-    print(f"Total {counter} new rules were created")
 
 if __name__ == '__main__':
     print_welcome()

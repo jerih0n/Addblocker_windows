@@ -20,7 +20,7 @@ For Windows:
 Opne CMD with as Administrator! Changes in the firewall requres them, and it won't work with normal or restricted windows account:
     
 ```bash
-cd [Program Directory where Encryptor.py is located] 
+cd [Program Directory where main.py is located] 
 ```
 Then run in that 
 ```bash
